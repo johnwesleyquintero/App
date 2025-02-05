@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Amazon Forecasting Tool</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link href="Pages/style.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100 flex flex-col min-h-screen justify-center items-center">
+
+    <!-- Header -->
+    <header class="bg-white dark:bg-gray-800 shadow-md sticky top-0 z-50 w-full">
+        <div class="max-w-7xl mx-auto px-4 py-5 flex justify-between items-center">
+            <nav>
+                <ul class="flex space-x-6">
+                    <li><a href="index.html" class="hover:text-purple-600 dark:hover:text-purple-400">Home</a></li>
+                    <li><a href="Pages/Amz_Data_Tool.html" class="hover:text-purple-600 dark:hover:text-purple-400">Data Tool</a></li>
+                    <li><a href="Pages/Amz_Forecasting_Tool.html" class="hover:text-purple-600 dark:hover:text-purple-400">Forecasting Tool</a></li>
+                    <li><a href="Pages/Amz_SEO_Tool.html" class="hover:text-purple-600 dark:hover:text-purple-400">SEO Tool</a></li>
+                </ul>
+            </nav>
+            <button onclick="toggleDarkMode()" class="bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-4 py-2 rounded-full">
+                Toggle Dark Mode
+            </button>
+        </div>
+    </header>
+    
+    
+
+    <!-- Main Content -->
+    <div class="container bg-white dark:bg-gray-800 p-6 sm:p-12 rounded-xl shadow-lg text-center max-w-2xl w-full mt-8">
+        <h1 class="text-3xl font-bold text-purple-600 mb-8">Amazon Forecasting Tool</h1>
+        <p class="text-gray-700 dark:text-gray-300 mb-8">
+            Upload your Sales Data to generate stock reordering recommendations.
+        </p>
+
+        <div class="file-input mb-6 text-left">
+            <label for="salesFile" class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Sales Data:</label>
+            <input type="file" id="salesFile" accept=".csv" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline cursor-pointer hover:border-purple-500"/>
+        </div>
+
+        <button onclick="processData()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-8 rounded-full focus:outline-none focus:shadow-outline mt-6" aria-label="Generate Forecast">
+            Generate Forecast
+        </button>
+
+        <div id="progress-container" class="mt-8 hidden">
+            <div class="loading-spinner border-4 border-gray-200 border-t-purple-600 rounded-full w-8 h-8 mx-auto animate-spin"></div>
+            <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">Processing your data...</p>
+        </div>
+
+        <p id="status" class="mt-8 text-sm text-gray-700 dark:text-gray-300 italic"></p>
+
+        <div id="results" class="mt-8 hidden">
+            <h2 class="text-2xl font-bold text-purple-600 mb-4">Forecast Results</h2>
+            <table class="w-full border-collapse">
+                <thead>
+                    <tr>
+                        <th class="bg-gray-200 border border-gray-300 px-4 py-2 font-semibold text-left">Date</th>
+                        <th class="bg-gray-200 border border-gray-300 px-4 py-2 font-semibold text-left">Forecast</th>
+                    </tr>
+                </thead>
+                <tbody id="forecastTableBody"></tbody>
+            </table>
+
+            <!-- Download Button -->
+            <button id="downloadBtn" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-8 rounded-full focus:outline-none focus:shadow-outline mt-6 hidden">
+                Download Results
+            </button>
+        </div>
+
+    </div>
+
+    <footer class="bg-gray-900 dark:bg-gray-800 text-white py-8 w-full mt-8">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <p>&copy; 2025 Amazon Tools Suite. All Rights Reserved.</p>
+        </div>
+    </footer>
+    
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/string-similarity@4.0.4/umd/string-similarity.min.js"></script>
+
+    <script>
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+        }
+
+        function validateFile(file) {
+            if (!file || file.type !== "text/csv") {
+                alert("Please upload a valid CSV file.");
+                return false;
+            }
+            return true;
+        }
+
+        async function processData() {
+            const files = { sales: document.getElementById('salesFile').files[0] };
+            const statusElement = document.getElementById('status');
+            const progressContainer = document.getElementById('progress-container');
+            const resultsContainer = document.getElementById('results');
+
+            if (!validateFile(files.sales)) return;
+
+            statusElement.textContent = "Generating forecast... Please wait.";
+            progressContainer.classList.remove('hidden');
+
+            try {
+                const salesData = await parseCSV(files.sales);
+                const calculatedData = calculateForecastMetrics(salesData);
+
+                renderForecastTable(calculatedData);
+                document.getElementById('downloadBtn').classList.remove('hidden');
+                resultsContainer.classList.remove('hidden');
+                statusElement.textContent = "Forecast generated!";
+            } catch (error) {
+                console.error(error);
+                statusElement.textContent = "An error occurred during processing. Please check the console for details.";
+            } finally {
+                progressContainer.classList.add('hidden');
+            }
+        }
+
+        function parseCSV(file) {
+            return new Promise((resolve, reject) => {
+                Papa.parse(file, {
+                    header: true,
+                    skipEmptyLines: true,
+                    complete: (results) => {
+                        if (results.errors.length > 0) {
+                            reject(new Error("Error parsing CSV file."));
+                        } else {
+                            resolve(results.data);
+                        }
+                    },
+                });
+            });
+        }
+
+        function calculateForecastMetrics(data) {
+            // Placeholder function for forecasting logic
+            console.log("Data received for forecasting:", data);
+            statusElement.textContent = "Forecast calculation logic is not yet implemented.";
+            return []; // Return empty array for now
+        }
+
+        function renderForecastTable(forecastData) {
+            const forecastTableBody = document.getElementById('forecastTableBody');
+            forecastTableBody.innerHTML = ''; // Clear existing table data
+
+            if (forecastData && forecastData.length > 0) {
+                forecastData.forEach(item => {
+                    let row = forecastTableBody.insertRow();
+                    let dateCell = row.insertCell();
+                    let forecastCell = row.insertCell();
+                    dateCell.textContent = item.date; // Assuming your data has a 'date' field
+                    forecastCell.textContent = item.forecast; // Assuming your data has a 'forecast' field
+                });
+            } else {
+                statusElement.textContent = "No forecast data available to display.";
+            }
+        }
+
+        function downloadCSV(data) {
+            const csv = Papa.unparse(data);
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            FileSaver.saveAs(blob, 'forecast_results.csv');
+        }
+
+        // Attach download event listener
+        document.getElementById('downloadBtn').addEventListener('click', () => {
+            const forecastData = []; // Get forecast data
+            downloadCSV(forecastData);
+        });
+    </script>
+</body>
+</html>

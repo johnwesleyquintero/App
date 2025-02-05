@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accessible Form Components</title>
+</head>
+<body>
+    <form>
+        <section>
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" aria-required="true" placeholder="Your name">
+            <div id="name-error" class="error-message" aria-live="assertive"></div>
+        </section>
+
+        <section>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" aria-required="true" aria-describedby="email-hint" placeholder="Your email">
+            <div id="email-hint" class="hint-message">Example: user@example.com</div>
+            <div id="email-error" class="error-message" aria-live="assertive"></div>
+        </section>
+
+        <section>
+            <fieldset>
+                <legend>Choose your favorite fruit:</legend>
+                <input type="radio" id="apple" name="fruit" value="apple">
+                <label for="apple">Apple</label><br>
+                <input type="radio" id="banana" name="fruit" value="banana">
+                <label for="banana">Banana</label><br>
+                <input type="radio" id="orange" name="fruit" value="orange">
+                <label for="orange">Orange</label>
+            </fieldset>
+        </section>
+
+        <section>
+            <label for="country">Country:</label>
+            <select id="country" name="country" aria-describedby="country-instructions">
+                <option value="">--Please choose an option--</option>
+                <option value="usa">United States</option>
+                <option value="canada">Canada</option>
+                <option value="uk">United Kingdom</option>
+            </select>
+            <div id="country-instructions" class="instructions">Select your country from the list.</div>
+            <div id="country-error" class="error-message" aria-live="assertive"></div>
+        </section>
+
+        <section>
+            <div role="group" aria-labelledby="consent-legend">
+                <p id="consent-legend">Consent to receive emails:</p>
+                <input type="checkbox" id="consent" name="consent">
+                <label for="consent">I agree to receive emails.</label>
+            </div>
+        </section>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <script>
+        // Example JavaScript for client-side validation (for demonstration purposes)
+        document.querySelector('form').addEventListener('submit', function(event) {
+            let isValid = true;
+
+            // Name validation
+            const nameInput = document.getElementById('name');
+            const nameError = document.getElementById('name-error');
+            if (!nameInput.value.trim()) {
+                nameError.textContent = 'Name is required.';
+                isValid = false;
+            } else {
+                nameError.textContent = '';
+            }
+
+            // Email validation (basic example)
+            const emailInput = document.getElementById('email');
+            const emailError = document.getElementById('email-error');
+            if (!emailInput.value.trim()) {
+                emailError.textContent = 'Email is required.';
+                isValid = false;
+            } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value)) {
+                emailError.textContent = 'Invalid email format.';
+                isValid = false;
+            } else {
+                emailError.textContent = '';
+            }
+
+            // Country validation
+            const countrySelect = document.getElementById('country');
+            const countryError = document.getElementById('country-error');
+            if (!countrySelect.value) {
+                countryError.textContent = 'Please select a country.';
+                isValid = false;
+            } else {
+                countryError.textContent = '';
+            }
+
+
+            if (!isValid) {
+                event.preventDefault(); // Prevent form submission if not valid
+            }
+        });
+    </script>
+</body>
+</html>

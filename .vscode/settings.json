@@ -1,0 +1,41 @@
+{
+    "vscode-edge-devtools.headless": true,
+    "editor.tabSize": 2,
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": "explicit"
+    },
+    "files.autoSave": "onFocusChange",
+    "files.exclude": {
+        "**/.git": true,
+        "**/.DS_Store": true,
+        "**/node_modules": true
+    },
+    "eslint.validate": [
+        "javascript",
+        "javascriptreact",
+        "typescript",
+        "typescriptreact"
+    ],
+    "prettier.requireConfig": true,
+    "terminal.integrated.fontFamily": "Fira Code",
+    "terminal.integrated.fontSize": 14,
+    "workbench.colorTheme": "Dracula",
+    "git.autofetch": true,
+    "git.confirmSync": false,
+    "extensions.ignoreRecommendations": false,
+    "javascript.updateImportsOnFileMove.enabled": "always",
+    "typescript.updateImportsOnFileMove.enabled": "always",
+    "emmet.includeLanguages": {
+        "javascript": "javascriptreact",
+        "typescript": "typescriptreact"
+    },
+    "explorer.confirmDelete": false,
+    "editor.suggestSelection": "first",
+    "editor.renderWhitespace": "all",
+    "workbench.startupEditor": "newUntitledFile",
+    "python.pythonPath": "C:\\Users\\johnw\\.amzhub.io\\python\\generate_code.py",
+    "python.autoComplete.extraPaths": ["./src"],  // Add any additional paths here
+    "editor.snippetSuggestions": "top",
+    "files.insertFinalNewline": true
+}

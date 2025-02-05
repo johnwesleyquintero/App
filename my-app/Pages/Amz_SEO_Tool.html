@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Amazon SEO Tool</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet" />
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #333;
+            flex-direction: column;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h1 {
+            color: #9334e9;
+            font-size: 28px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        p {
+            color: #555;
+            font-size: 16px;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+            margin-bottom: 20px;
+            resize: vertical;
+        }
+
+        button {
+            padding: 12px 24px;
+            font-size: 16px;
+            background-color: #9334e9;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #7f2fe6;
+        }
+
+        .results {
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .results h2 {
+            color: #9334e9;
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+
+        .results ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .results li {
+            background: #f9f9f9;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #9334e9;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Amazon SEO Tool</h1>
+        <p>
+            Optimize your product listings with our SEO tool. Enter your product details below and get actionable insights.
+        </p>
+
+        <textarea id="title" placeholder="Enter product title..." rows="2"></textarea>
+        <textarea id="description" placeholder="Enter product description..." rows="5"></textarea>
+        <textarea id="keywords" placeholder="Enter target keywords (comma-separated)..." rows="3"></textarea>
+
+        <button onclick="analyzeSEO()">Analyze SEO</button>
+
+        <div id="progress-container" style="display: none;">
+            <div class="loading-spinner"></div>
+        </div>
+
+        <div class="results" id="results">
+            <h2>Analysis Results</h2>
+            <ul id="resultsList"></ul>
+        </div>
+    </div>
+
+    <script>
+        async function analyzeSEO() {
+            const title = document.getElementById('title').value.trim();
+            const description = document.getElementById('description').value.trim();
+            const keywords = document.getElementById('keywords').value.trim().split(',').map(k => k.trim());
+
+            const progressContainer = document.getElementById('progress-container');
+            const resultsList = document.getElementById('resultsList');
+
+            if (!title || !description || keywords.length === 0) {
+                alert("Please fill in all fields.");
+                return;
+            }
+
+            progressContainer.style.display = 'block';
+            resultsList.innerHTML = '';
+
+            // Simulate analysis (replace with actual logic)
+            setTimeout(() => {
+                const results = [
+                    `Title contains ${countKeywords(title, keywords)} target keywords.`,
+                    `Description contains ${countKeywords(description, keywords)} target keywords.`,
+                    `Keyword density in title: ${calculateDensity(title, keywords)}%`,
+                    `Keyword density in description: ${calculateDensity(description, keywords)}%`,
+                    "Suggestions: Add more keywords to the title and description for better visibility.",
+                ];
+
+                progressContainer.style.display = 'none';
+                results.forEach(result => {
+                    const li = document.createElement('li');
+                    li.textContent = result;
+                    resultsList.appendChild(li);
+                });
+            }, 2000);
+        }
+
+        function countKeywords(text, keywords) {
+            return keywords.filter(keyword => text.toLowerCase().includes(keyword.toLowerCase())).length;
+        }
+
+        function calculateDensity(text, keywords) {
+            const totalWords = text.split(/\s+/).length;
+            const keywordCount = keywords.reduce((count, keyword) => {
+                return count + (text.toLowerCase().split(keyword.toLowerCase()).length - 1);
+            }, 0);
+            return ((keywordCount / totalWords) * 100).toFixed(2);
+        }
+    </script>
+const restrictedKeywords = [
+    "best seller",
+    "cheap",
+    "discount",
+    "free shipping",
+    "guaranteed",
+    "on sale",
+    "organic",
+    "premium",
+    "top rated",
+    "100% satisfaction",
+    "FDA approved",
+    "Amazon’s choice",
+    "lowest price",
+    "limited time offer",
+    "compare to [brand]",
+    "better than [brand]"
+];
+
+function scanForRestrictedKeywords(text, restrictedKeywords) {
+    const foundKeywords = [];
+    const lowerText = text.toLowerCase();
+
+    restrictedKeywords.forEach(keyword => {
+        if (lowerText.includes(keyword.toLowerCase())) {
+            foundKeywords.push(keyword);
+        }
+    });
+
+    return foundKeywords;
+}
+
+function analyzeSEO() {
+    const title = document.getElementById('title').value.trim();
+    const description = document.getElementById('description').value.trim();
+    const keywords = document.getElementById('keywords').value.trim().split(',').map(k => k.trim());
+
+    // Scan for restricted keywords
+    const restrictedInTitle = scanForRestrictedKeywords(title, restrictedKeywords);
+    const restrictedInDescription = scanForRestrictedKeywords(description, restrictedKeywords);
+    const restrictedInKeywords = keywords.filter(keyword => restrictedKeywords.includes(keyword.toLowerCase()));
+
+    // Display results
+    const resultsList = document.getElementById('resultsList');
+    resultsList.innerHTML = '';
+
+    if (restrictedInTitle.length > 0) {
+        resultsList.innerHTML += `<li>🚫 Restricted keywords found in title: ${restrictedInTitle.join(', ')}</li>`;
+    }
+    if (restrictedInDescription.length > 0) {
+        resultsList.innerHTML += `<li>🚫 Restricted keywords found in description: ${restrictedInDescription.join(', ')}</li>`;
+    }
+    if (restrictedInKeywords.length > 0) {
+        resultsList.innerHTML += `<li>🚫 Restricted keywords found in target keywords: ${restrictedInKeywords.join(', ')}</li>`;
+    }
+
+    if (restrictedInTitle.length === 0 && restrictedInDescription.length === 0 && restrictedInKeywords.length === 0) {
+        resultsList.innerHTML += `<li>✅ No restricted keywords found. You're good to go!</li>`;
+    }
+}
+
+function suggestAlternatives(keyword) {
+    const alternatives = {
+        "best seller": "popular choice",
+        "cheap": "affordable",
+        "discount": "value deal",
+        "free shipping": "fast delivery",
+        "guaranteed": "reliable",
+        "on sale": "special offer",
+        "organic": "natural",
+        "premium": "high-quality",
+        "top rated": "highly rated",
+        "100% satisfaction": "customer favorite",
+        "FDA approved": "meets safety standards",
+        "Amazon’s choice": "customer favorite",
+        "lowest price": "competitive pricing",
+        "limited time offer": "exclusive deal",
+        "compare to [brand]": "similar to [brand]",
+        "better than [brand]": "comparable to [brand]"
+    };
+
+    return alternatives[keyword.toLowerCase()] || "No alternative found.";
+}
+
+if (restrictedInTitle.length > 0) {
+    resultsList.innerHTML += `<li>🚫 Restricted keywords found in title: ${restrictedInTitle.join(', ')}</li>`;
+    restrictedInTitle.forEach(keyword => {
+        resultsList.innerHTML += `<li>💡 Suggestion: Replace "${keyword}" with "${suggestAlternatives(keyword)}"</li>`;
+    });
+}
+
+Best Seller Organic Pillow Cases - Cheap and Discounted!
+
+🚫 Restricted keywords found in title: best seller, organic, cheap, discount
+💡 Suggestion: Replace "best seller" with "popular choice"
+💡 Suggestion: Replace "organic" with "natural"
+💡 Suggestion: Replace "cheap" with "affordable"
+💡 Suggestion: Replace "discount" with "value deal"
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Amazon SEO Tool</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gray-100 text-gray-900 flex flex-col min-h-screen justify-center items-center">
+    
+    <header class="bg-white shadow-md sticky top-0 z-50 w-full">
+        <div class="max-w-7xl mx-auto px-4 py-5 flex justify-between items-center">
+            <nav>
+                <ul class="flex space-x-6">
+                    <li><a href="index.html" class="hover:text-purple-600">Home</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container bg-white p-12 rounded-xl shadow-lg text-center max-w-2xl w-full mt-8">
+        <h1 class="text-3xl font-bold text-purple-600 mb-8">Amazon SEO Tool</h1>
+        <p class="text-gray-700 mb-8">
+            Optimize your product listings with our SEO tool. Enter your product details below and get actionable insights.
+        </p>
+        <div class="input-group mb-6 text-left">
+            <label for="title" class="block text-gray-700 text-sm font-bold mb-2">Product Title:</label>
+            <textarea id="title" placeholder="Enter product title..." rows="2" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></textarea>
+        </div>
+        <div class="input-group mb-6 text-left">
+            <label for="description" class="block text-gray-700 text-sm font-bold mb-2">Product Description:</label>
+            <textarea id="description" placeholder="Enter product description..." rows="5" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></textarea>
+        </div>
+        <div class="input-group mb-6 text-left">
+            <label for="keywords" class="block text-gray-700 text-sm font-bold mb-2">Target Keywords:</label>
+            <textarea id="keywords" placeholder="Enter target keywords (comma-separated)..." rows="3" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></textarea>
+        </div>
+        <button onclick="analyzeSEO()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-8 rounded-full focus:outline-none focus:shadow-outline">Analyze SEO</button>
+
+        <div id="progress-container" style="display: none;" class="mt-8">
+            <div class="loading-spinner border-4 border-gray-200 border-t-purple-600 rounded-full w-8 h-8 mx-auto animate-spin"></div>
+        </div>
+
+        <div class="results mt-8 text-left" id="results">
+            <h2 class="text-2xl font-bold text-purple-600 mb-4">Analysis Results</h2>
+            <ul id="resultsList" class="list-none p-0"></ul>
+        </div>
+    </div>
+
+    <script>
+        const restrictedKeywords = [
+            "best seller", "cheap", "discount", "free shipping", "guaranteed", "on sale",
+            "organic", "premium", "top rated", "100% satisfaction", "FDA approved",
+            "Amazon’s choice", "lowest price", "limited time offer", "compare to [brand]",
+            "better than [brand]"
+        ];
+
+        async function analyzeSEO() {
+            const title = document.getElementById('title').value.trim();
+            const description = document.getElementById('description').value.trim();
+            const keywords = document.getElementById('keywords').value.trim().split(',').map(k => k.trim());
+
+            const progressContainer = document.getElementById('progress-container');
+            const resultsList = document.getElementById('resultsList');
+
+            if (!title || !description || keywords.length === 0) {
+                alert("Please fill in all fields.");
+                return;
+            }
+
+            progressContainer.style.display = 'block';
+            resultsList.innerHTML = '';
+
+            // Simulate analysis (replace with actual logic)
+            setTimeout(() => {
+                const results = [
+                    `Title contains ${countKeywords(title, keywords)} target keywords.`,
+                    `Description contains ${countKeywords(description, keywords)} target keywords.`,
+                    `Keyword density in title: ${calculateDensity(title, keywords)}%`,
+                    `Keyword density in description: ${calculateDensity(description, keywords)}%`,
+                    "Suggestions: Add more keywords to the title and description for better visibility."
+                ];
+
+                progressContainer.style.display = 'none';
+                results.forEach(result => {
+                    const li = document.createElement('li');
+                    li.className = 'bg-gray-50 p-3 border border-gray-200 rounded-md mb-2'; // Added Tailwind classes for results list items
+                    li.textContent = result;
+                    resultsList.appendChild(li);
+                });
+
+                // Scan for restricted keywords
+                const restrictedInTitle = scanForRestrictedKeywords(title);
+                const restrictedInDescription = scanForRestrictedKeywords(description);
+                const restrictedInKeywords = keywords.filter(keyword => restrictedKeywords.includes(keyword.toLowerCase()));
+
+                displayRestrictedResults(restrictedInTitle, restrictedInDescription, restrictedInKeywords, resultsList);
+            }, 2000);
+        }
+
+        function countKeywords(text, keywords) {
+            return keywords.filter(keyword => text.toLowerCase().includes(keyword.toLowerCase())).length;
+        }
+
+        function calculateDensity(text, keywords) {
+            const totalWords = text.split(/\s+/).length;
+            const keywordCount = keywords.reduce((count, keyword) => {
+                return count + (text.toLowerCase().split(keyword.toLowerCase()).length - 1);
+            }, 0);
+            return ((keywordCount / totalWords) * 100).toFixed(2);
+        }
+
+        function scanForRestrictedKeywords(text) {
+            return restrictedKeywords.filter(keyword => text.toLowerCase().includes(keyword.toLowerCase()));
+        }
+
+        function displayRestrictedResults(restrictedInTitle, restrictedInDescription, restrictedInKeywords, resultsList) {
+            if (restrictedInTitle.length > 0) {
+                resultsList.innerHTML += `<li class="bg-red-100 border-l-4 border-red-500 text-red-700 p-3 mb-2">🚫 Restricted keywords found in title: ${restrictedInTitle.join(', ')}</li>`;
+                restrictedInTitle.forEach(keyword => {
+                    resultsList.innerHTML += `<li class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-3 mb-2">💡 Suggestion: Replace "${keyword}" with "${suggestAlternatives(keyword)}"</li>`;
+                });
+            }
+
+            if (restrictedInDescription.length > 0) {
+                resultsList.innerHTML += `<li class="bg-red-100 border-l-4 border-red-500 text-red-700 p-3 mb-2">🚫 Restricted keywords found in description: ${restrictedInDescription.join(', ')}</li>`;
+            }
+
+            if (restrictedInKeywords.length > 0) {
+                resultsList.innerHTML += `<li class="bg-red-100 border-l-4 border-red-500 text-red-700 p-3 mb-2">🚫 Restricted keywords found in target keywords: ${restrictedInKeywords.join(', ')}</li>`;
+            }
+
+            if (restrictedInTitle.length === 0 && restrictedInDescription.length === 0 && restrictedInKeywords.length === 0) {
+                resultsList.innerHTML += `<li class="bg-green-100 border-l-4 border-green-500 text-green-700 p-3 mb-2">✅ No restricted keywords found. You're good to go!</li>`;
+            }
+        }
+
+        function suggestAlternatives(keyword) {
+            const alternatives = {
+                "best seller": "popular choice", "cheap": "affordable", "discount": "value deal",
+                "free shipping": "fast delivery", "guaranteed": "reliable", "on sale": "special offer",
+                "organic": "natural", "premium": "high-quality", "top rated": "highly rated",
+                "100% satisfaction": "customer favorite", "FDA approved": "meets safety standards",
+                "Amazon’s choice": "customer favorite", "lowest price": "competitive pricing",
+                "limited time offer": "exclusive deal", "compare to [brand]": "similar to [brand]",
+                "better than [brand]": "comparable to [brand]"
+            };
+            return alternatives[keyword.toLowerCase()] || "No alternative found.";
+        }
+
+   
+   
+   </script>
+<footer class="bg-gray-900 dark:bg-gray-800 text-white py-8 w-full mt-8">
+    <div class="max-w-7xl mx-auto px-6 text-center">
+        <p>&copy; 2025 Amazon Tools Suite. All Rights Reserved.</p>
+    </div>
+</footer>
+</body>
+</html>
