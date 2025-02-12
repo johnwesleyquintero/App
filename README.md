@@ -1,4 +1,4 @@
-# My Amz Hub - Tools for Amazon Sellers
+# Nebula - SEO PPC Tools for Amazon Sellers
 
 A collection of free, easy-to-use HTML-based tools designed to help Amazon sellers streamline their operations, gain valuable insights, and improve their business performance.
 
